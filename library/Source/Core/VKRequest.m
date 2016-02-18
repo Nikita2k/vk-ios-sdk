@@ -440,12 +440,17 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
 }
 
 - (void)cancel {
-    self.executionOperation.completionBlock = nil;
-    [self.executionOperation cancel];
-    self.executionOperation = nil;
-    [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    self.error = [NSError errorWithVkError:[VKError errorWithCode:VK_API_CANCELED]];
-    [self finishRequest];
+    
+    if (self.executionOperation.isCancelled == false && self.executionOperation.isFinished == false) {
+        
+        self.executionOperation.completionBlock = nil;
+        [self.executionOperation cancel];
+        self.executionOperation = nil;
+        [NSObject cancelPreviousPerformRequestsWithTarget:self];
+        self.error = [NSError errorWithVkError:[VKError errorWithCode:VK_API_CANCELED]];
+        [self finishRequest];
+        
+    }
 
 }
 
