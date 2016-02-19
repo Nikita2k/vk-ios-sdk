@@ -170,14 +170,16 @@ static NSString *VK_ACCESS_TOKEN_DEFAULTS_KEY = @"VK_ACCESS_TOKEN_DEFAULTS_KEY_D
     if (vkApp) {
         [[UIApplication sharedApplication] openURL:urlToOpen];
         instance.authState = VKAuthorizationExternal;
-    } else if (safariEnabled && [SFSafariViewController class] && instance.authState < VKAuthorizationSafariInApp) {
-        SFSafariViewController *viewController = [[SFSafariViewController alloc] initWithURL:urlToOpen];
-        viewController.delegate = instance;
-        [viewController vks_presentViewControllerThroughDelegate];
-        instance.presentedSafariViewController = viewController;
-
-        instance.authState = VKAuthorizationSafariInApp;
-    } else {
+    }
+//    else if (safariEnabled && [SFSafariViewController class] && instance.authState < VKAuthorizationSafariInApp) {
+//        SFSafariViewController *viewController = [[SFSafariViewController alloc] initWithURL:urlToOpen];
+//        viewController.delegate = instance;
+//        [viewController vks_presentViewControllerThroughDelegate];
+//        instance.presentedSafariViewController = viewController;
+//
+//        instance.authState = VKAuthorizationSafariInApp;
+//    }
+    else {
         //Authorization through popup webview
         [VKAuthorizeController presentForAuthorizeWithAppId:clientId
                                              andPermissions:permissions
@@ -343,6 +345,8 @@ static NSString *VK_ACCESS_TOKEN_DEFAULTS_KEY = @"VK_ACCESS_TOKEN_DEFAULTS_KEY_D
             [[NSHTTPCookieStorage sharedHTTPCookieStorage]
                     deleteCookie:cookie];
         }
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
     [VKAccessToken delete:VK_ACCESS_TOKEN_DEFAULTS_KEY];
 
     if (vkSdkInstance) {
